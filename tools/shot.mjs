@@ -1,6 +1,6 @@
 // Screenshot the site at 1280x720 and optionally diff against a reference image.
 // usage: node tools/shot.mjs [--hash '#/xbox-live'] [--out shot.png] [--ref ref.png] [--diff diff.png]
-//                            [--width 1280 --height 720] [--wait 600] [--eval 'js']
+//                            [--width 1280 --height 720] [--wait 600] [--eval 'js'] [--full 1]
 // Chromium may need extra shared libraries; pass their directory in PW_LIBS.
 import http from 'node:http';
 import fs from 'node:fs';
@@ -48,7 +48,7 @@ if (args.eval) {
 }
 await page.waitForTimeout(Number(args.wait ?? 600));
 const out = args.out ?? 'shot.png';
-await page.screenshot({ path: out });
+await page.screenshot({ path: out, fullPage: !!args.full });
 await browser.close();
 server.close();
 

@@ -277,6 +277,15 @@ body { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user
   cursor: pointer; opacity: .55;
 }
 #mute:hover, #mute:focus-visible { opacity: 1; }
+
+/* view switch (js/boot.js), styled to sit beside the mute button */
+#view-toggle {
+  position: fixed; right: 52px; top: 10px; z-index: 10;
+  height: 34px; padding: 0 14px; border: 0; border-radius: 17px;
+  background: rgba(0, 0, 0, .35); color: rgba(255, 255, 255, .85);
+  font: 15px 'Selawik', 'Segoe UI', system-ui, sans-serif; cursor: pointer; opacity: .7;
+}
+#view-toggle:hover, #view-toggle:focus-visible { opacity: 1; }
 #mute .mute-cross { display: none; }
 #mute[aria-pressed='true'] .mute-cross { display: inline; }
 #mute[aria-pressed='true'] .mute-waves { display: none; }

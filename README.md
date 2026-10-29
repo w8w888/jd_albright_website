@@ -4,6 +4,10 @@ JD Albright's portfolio site, presented as a working recreation of the Xbox 360 
 Each blade is a section (about, experience, projects, skills, contact); highlight an item to see a summary,
 select it to open the full details or follow the link.
 
+A second, modern view shows the same content as a standard portfolio page (blade-style tabs, section colours).
+The button at the corner switches views; the choice is remembered, and `?view=modern` / `?view=classic`
+links straight to one.
+
 ## Run it
 
 ```sh
@@ -17,7 +21,9 @@ assets (`wrangler.jsonc`); pushes to `main` redeploy automatically.
 
 | Path | Contents |
 |---|---|
-| `site/js/data.js` | All portfolio content: blades, items, descriptions, links |
+| `site/js/data.js` | All portfolio content: blades, items, descriptions, links (used by both views) |
+| `site/index.html`, `site/js/boot.js` | Picks the view and its stylesheet; the view switch |
+| `site/js/modern.js`, `site/css/modern.css` | The modern view |
 | `site/js/layout.js`, `site/css/dashboard.css` | Stage size and positions |
 | `site/js/blades.js`, `site/js/colorbg.js` | Blade strips (SVG) and the colour background |
 | `site/js/main.js`, `site/js/input.js` | State, blade switching, panels; mouse, touch, keyboard and controller input |
