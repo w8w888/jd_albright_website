@@ -1,0 +1,22 @@
+# Files set aside as unnecessary (kept locally, not versioned)
+junk/
+
+# Original Microsoft binaries used only for re-extraction
+source/
+
+# Scratch output from tools/extract
+out/
+
+__pycache__/
+*.pyc
+node_modules/
+dist/
+.DS_Store
+*:Zone.Identifier
+
+# Résumés contain a phone number; keep them out of the (eventually public) repo
+/*.pdf
+
+# Original photos (only the cropped, metadata-free copy in site/ is published)
+/*.jpg
+/*.png

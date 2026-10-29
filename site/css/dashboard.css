@@ -1,0 +1,307 @@
+/* Xbox 360 Blades dashboard. All stage geometry is in 1280x720 stage pixels; the stage is scaled to fit. */
+
+/* ConvectionUI: the console's own UI font (xenonclatin.xtt, converted by tools/extract/xtt2ttf.py).
+   Selawik is the open fallback for when the Microsoft assets are removed. */
+@font-face {
+  font-family: 'ConvectionUI';
+  src: url('../fonts/convection.ttf') format('truetype');
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Selawik';
+  src: url('../fonts/selawk.woff2') format('woff2');
+  font-weight: 400;
+  font-display: block;
+}
+@font-face {
+  font-family: 'Selawik';
+  src: url('../fonts/selawksb.woff2') format('woff2');
+  font-weight: 600;
+  font-display: block;
+}
+
+:root {
+  --text: #1c1c1c;
+  --text-emboss: 0 1px 0 rgba(255, 255, 255, .28);
+  --title-shadow: 0 1px 2px rgba(0, 0, 0, .35);
+  --rule-dark: rgba(90, 50, 10, .38);
+  --rule-light: rgba(255, 255, 255, .35);
+  --letterbox: #0e0e0e;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--letterbox); overflow: hidden; }
+body { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user-select: none; }
+
+#viewport { position: fixed; inset: 0; overflow: hidden; touch-action: none; }
+
+#stage {
+  position: absolute; left: 50%; top: 50%;
+  width: 1280px; height: 720px;
+  overflow: hidden;
+  transform-origin: 50% 50%;
+  font-family: 'ConvectionUI', 'Selawik', 'Segoe UI', system-ui, sans-serif;
+  color: var(--text);
+  background: #cfcfd1;
+}
+
+#backdrop {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(140% 120% at 85% 45%, #f1f1f2 0%, #dadadc 45%, #b9b9bb 100%);
+}
+
+/* ---- colour background (see js/colorbg.js; scene units, mapped onto the stage) ---------------- */
+.cbg { position: absolute; inset: 0; overflow: hidden; isolation: isolate; }
+.cbg-scene { position: absolute; left: 0; top: 0; width: 1120px; height: 770px; transform-origin: 0 0; isolation: isolate; }
+.cbg-scene > * { position: absolute; }
+.cbg-black { inset: 0; background: #000; }
+.cbg-swirl { z-index: 3; mix-blend-mode: soft-light; filter: blur(28px); }
+.cbg-back, .cbg-front { inset: 0; }
+.cbg-front { opacity: .7; }
+.cbg-white { inset: 0; z-index: 3; opacity: var(--white, .3); mix-blend-mode: screen;
+  background: linear-gradient(180deg, rgba(235,235,235,.2) 0%, rgba(235,235,235,.39) 50.2%, rgba(235,235,235,.2) 100%); }
+.cbg-dark-top { left: 0; top: 0; width: 1120px; height: 282px; z-index: 3; mix-blend-mode: multiply;
+  background: linear-gradient(180deg, #dcdcdc, #fff); }
+
+/* ---- blades ---------------------------------------------------------------------------- */
+.blade {
+  position: absolute; left: 0; top: 0;
+  width: 1500px; height: 720px;
+  will-change: transform;
+  pointer-events: none;
+}
+.blade-art { position: absolute; left: -40px; top: 0; overflow: visible; pointer-events: none; }
+/* each strip shades the one beneath it, away from the content */
+.blade .blade-art { filter: drop-shadow(5px 0 5px rgba(0, 0, 0, .3)); }
+.blade.on-left .blade-art { filter: drop-shadow(-5px 0 5px rgba(0, 0, 0, .3)); }
+.blade-art .hit { pointer-events: visiblePainted; cursor: pointer; }
+.blade.is-active .blade-art .hit { cursor: default; }
+
+.tab-label {
+  position: absolute; left: 0; top: 0;
+  color: rgba(15, 15, 15, .59);
+  writing-mode: vertical-rl;
+  font-size: 28.2px; line-height: 30px;
+  white-space: nowrap;
+  pointer-events: auto; cursor: pointer;
+}
+
+.blade-content { position: absolute; inset: 0; }
+.blade.is-active .blade-content { pointer-events: auto; }
+.blade-content > * { position: absolute; }
+
+/* Header and footer bands of the active blade */
+.blade-content > .band { position: absolute; left: 36px; width: var(--band-w, 1464px); pointer-events: none; }
+.band--top { top: 0; height: 88px; background: rgba(60, 25, 0, .07); border-bottom: 1.5px solid rgba(255, 255, 255, .35); border-radius: 0 0 34px 34px; }
+.band--bottom { bottom: 0; height: 120px; background: rgba(60, 25, 0, .1); border-top: 1.5px solid rgba(255, 255, 255, .35); border-radius: 34px 34px 0 0; }
+
+/* Landscape positions, relative to the active blade's tab x (127 in the reference capture). */
+.blade-title { left: 90px; top: 46px; }
+.tile { left: 78px; top: 98px; width: 395px; height: 135px; }
+.menu { left: 86px; top: 242px; width: 378px; }
+.no-tile .menu { top: 98px; }
+.meta { left: 483px; top: 98px; width: var(--meta-w, 392px); }
+.tray { left: 78px; top: 530px; width: var(--tray-w, 780px); height: 46px; }
+.buttonbar { left: 0; bottom: 0; width: 900px; height: 120px; }
+
+.blade-title {
+  font-size: 35.5px; line-height: 40px;
+  color: #fff; text-shadow: var(--title-shadow);
+}
+
+/* ---- focus lozenge (sign-in tile and focused rows) --------------------------------------- */
+.focusable { cursor: pointer; }
+.tile, .row.is-focused::before, .tray.is-focused::before {
+  border-radius: 9px;
+}
+.tile.is-focused, .row.is-focused::before {
+  background: linear-gradient(180deg, rgba(255, 255, 255, .82) 0%, rgba(255, 246, 238, .62) 60%, rgba(255, 236, 220, .5) 100%);
+  border: 2px solid rgba(118, 76, 40, .7);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .55), 0 1px 2px rgba(0, 0, 0, .2);
+}
+
+/* ---- sign-in tile / gamercard ------------------------------------------------------------ */
+.tile { border: 2px solid transparent; }
+.tile-head {
+  position: absolute; left: 0; right: 0; top: 0; height: 33px;
+  padding: 3px 10px 0;
+  font-size: 28.2px; line-height: 28px;
+  border-radius: 7px 7px 0 0;
+  text-shadow: var(--text-emboss);
+}
+.tile.is-focused .tile-head { background: rgba(140, 100, 70, .14); }
+.tile-pic {
+  position: absolute; left: 9px; top: 43px; width: 78px; height: 78px;
+  border: 2px solid rgba(60, 40, 20, .55);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+}
+.tile-text { position: absolute; left: 100px; top: 61px; font-size: 28.2px; line-height: 28px; text-shadow: var(--text-emboss); }
+.tile-stats { position: absolute; left: 100px; right: 12px; top: 36px; font-size: 28.2px; line-height: 32px; }
+.stat { display: flex; justify-content: space-between; }
+.stat-label--g::first-letter { color: transparent; background: url('../assets/images/shrdres/GScore.png') center / 26px no-repeat; }
+
+/* ---- menu rows --------------------------------------------------------------------------- */
+.menu { border-top: 2px solid var(--rule-dark); box-shadow: 0 1px 0 var(--rule-light); }
+.row {
+  position: relative;
+  display: flex; align-items: center;
+  border-bottom: 2px solid var(--rule-dark);
+  box-shadow: 0 1px 0 var(--rule-light);
+  font-size: 28.2px; line-height: 28px;
+  text-shadow: var(--text-emboss);
+}
+.row.is-focused::before { content: ''; position: absolute; inset: 2px -6px; z-index: -1; }
+.row--large { height: 77px; }
+.row--small { height: 49px; }
+.row-icon { flex: none; object-fit: contain; }
+.row--large .row-icon { width: 64px; height: 64px; margin: 0 18px 0 15px; }
+.row--small .row-icon { width: 32px; height: 32px; margin: 0 20px 0 12px; }
+.row-pic { width: 40px; height: 40px; margin: 0 16px 0 8px; border: 1px solid rgba(0, 0, 0, .4); }
+.row--banner { height: 118px; border-bottom: 0; box-shadow: none; }
+
+.live-banner {
+  position: absolute; left: -6px; top: 8px; width: 393px; height: 102px;
+  border-radius: 9px;
+  background: linear-gradient(180deg, #5c5c5f, #4d4d50);
+  border: 2px solid rgba(70, 50, 30, .6);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .22);
+  overflow: hidden;
+}
+.row--banner.is-focused::before { display: none; }
+.row--banner.is-focused .live-banner { border-color: rgba(255, 255, 255, .85); }
+.live-rings { position: absolute; left: 6px; top: 50%; }
+.ring {
+  position: absolute; left: 0; top: 0;
+  width: calc(28px + var(--i) * 20px); height: calc(28px + var(--i) * 20px);
+  border: 3px solid rgba(140, 200, 60, .55);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: ring 2.4s calc(var(--i) * .25s) ease-out infinite;
+}
+@keyframes ring { 0%, 100% { opacity: .25; } 40% { opacity: .9; } }
+.live-banner-logo { position: absolute; left: 191px; top: 16px; width: 107px; height: 67px; }
+
+/* ---- meta panel -------------------------------------------------------------------------- */
+.meta-brand { position: absolute; left: 107px; top: 27px; max-width: 200px; max-height: 120px; }
+.blade-content .meta-brand[src*='xboxLogo'] { left: 98px; top: 6px; width: 183px; max-width: none; max-height: none; }
+.meta-rule { position: absolute; left: 0; right: 0; top: 145px; border-top: 2px solid var(--rule-dark); box-shadow: 0 1px 0 var(--rule-light); }
+.meta-title { position: absolute; left: 10px; top: 160px; font-size: 31.5px; line-height: 30px; text-shadow: var(--text-emboss); }
+.meta-body { position: absolute; left: 12px; right: -14px; top: 195px; font-size: 28.2px; line-height: 33px; text-shadow: var(--text-emboss); }
+
+/* description text flows: a long title pushes the body down */
+.meta-text { position: absolute; left: 10px; right: 0; top: 160px; }
+.meta .meta-text > .meta-title { position: static; }
+.meta .meta-text > .meta-body { position: static; margin: 4px 0 0 2px; }
+#stage.portrait .meta .meta-text { position: static; }
+
+/* text brand in place of the console logo */
+.meta-brand-text { position: absolute; left: 0; right: 0; top: 34px; text-align: center; color: #fff; text-shadow: 0 2px 4px rgba(0, 0, 0, .35); }
+.meta-brand-title { font-size: 46px; line-height: 50px; }
+.meta-brand-sub { font-size: 21px; line-height: 28px; opacity: .9; }
+#stage.portrait .meta-brand-text { display: none; }
+
+/* ---- Open Tray bar ----------------------------------------------------------------------- */
+.tray {
+  border-radius: 23px;
+  border: 2px solid rgba(140, 90, 30, .45);
+  background: linear-gradient(180deg, rgba(255, 255, 255, .2), rgba(255, 255, 255, .05));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .35);
+}
+.tray.is-focused { border-color: rgba(118, 76, 40, .8); background: linear-gradient(180deg, rgba(255, 255, 255, .55), rgba(255, 246, 238, .3)); }
+.tray-knob {
+  position: absolute; left: -4px; top: -16px; width: 76px; height: 76px;
+  border-radius: 50%;
+  border: 2px solid rgba(140, 90, 30, .35);
+  background: radial-gradient(circle, rgba(255, 255, 255, .16) 0 60%, rgba(255, 255, 255, .06) 61%);
+  display: grid; place-items: center;
+}
+.tray-icon { width: 32px; height: 32px; opacity: .7; }
+.tray-label { position: absolute; left: 87px; top: 7px; font-size: 28.2px; line-height: 28px; text-shadow: var(--text-emboss); }
+
+/* ---- button bar -------------------------------------------------------------------------- */
+.legend {
+  position: absolute; display: flex; align-items: center; gap: 4px;
+  padding: 0; border: 0; background: none; font: inherit; color: #fff; cursor: pointer;
+}
+.legend:disabled { cursor: default; }
+.legend-text { font-size: 28px; line-height: 28px; text-shadow: 0 1px 2px rgba(0, 0, 0, .55); }
+.legend-icon { position: relative; width: 30px; height: 30px; flex: none; }
+.legend-icon img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.legend-letter {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-size: 19px; line-height: 1; padding-top: 1px;
+  color: rgba(10, 20, 10, .85); text-shadow: 0 1px 0 rgba(255, 255, 255, .35);
+}
+.legend-icon--off { width: 26px; height: 26px; }
+.legend-icon--off .legend-letter { font-size: 16px; color: rgba(80, 55, 30, .8); text-shadow: none; }
+.legend--y { left: 98px; top: 11px; }
+.legend--x { left: 76px; top: 41px; flex-direction: row-reverse; }
+.legend--b { left: 829px; top: 10px; }
+.legend--a { right: 30px; top: 39px; }
+.legend--x .legend-icon, .legend--a .legend-icon { margin: 0 -3px; }
+
+/* ---- second-level panels ------------------------------------------------------------------ */
+.panel {
+  position: absolute; top: 0; bottom: 0; left: var(--panel-left); width: 1400px; z-index: 200;
+  background: linear-gradient(180deg, var(--band) 0, var(--body) 30%, var(--body-light) 80%, var(--footer) 100%);
+  box-shadow: -6px 0 18px rgba(0, 0, 0, .35);
+  border-left: 3px solid rgba(255, 255, 255, .5);
+  border-radius: 28px 0 0 28px;
+  transform: translateX(1280px);
+  transition: transform var(--switch-ms) cubic-bezier(.65, 0, .35, 1);
+}
+.panel.is-open { transform: translateX(0); }
+.panel-band { position: absolute; left: 0; right: 0; }
+.panel-band--top { top: 0; height: 88px; background: var(--band); border-radius: 26px 0 26px 0; }
+.panel-band--bottom { bottom: 0; height: 120px; background: var(--footer); border-radius: 26px 0 0 26px; }
+.panel-title { position: absolute; left: 50px; top: 49px; font-size: 35.5px; line-height: 40px; color: #fff; text-shadow: var(--title-shadow); }
+.panel-list { position: absolute; left: 50px; top: 110px; width: 420px; border-top: 2px solid var(--rule-dark); }
+.panel-body { position: absolute; left: 50px; top: 112px; width: 700px; font-size: 25px; line-height: 33px; text-shadow: var(--text-emboss); }
+.panel-body p { margin: 0 0 12px; }
+.panel-body ul { margin: 0 0 14px; padding-left: 26px; }
+.panel-body li { margin-bottom: 6px; }
+#stage.portrait .panel-body { width: 420px; font-size: 24px; }
+.panel-message { position: absolute; left: 50px; top: 110px; width: 640px; margin: 0; font-size: 28.2px; line-height: 33px; text-shadow: var(--text-emboss); }
+.panel .buttonbar { position: absolute; bottom: 0; }
+.panel .legend--b { left: 760px; top: 10px; }
+.panel .legend--a { right: auto; left: 780px; top: 39px; }
+
+/* ---- mute toggle (outside the original UI) ---------------------------------------------- */
+#mute {
+  position: fixed; right: 10px; top: 10px; z-index: 10;
+  width: 34px; height: 34px; padding: 6px;
+  border: 0; border-radius: 50%;
+  background: rgba(0, 0, 0, .35); color: rgba(255, 255, 255, .8);
+  cursor: pointer; opacity: .55;
+}
+#mute:hover, #mute:focus-visible { opacity: 1; }
+#mute .mute-cross { display: none; }
+#mute[aria-pressed='true'] .mute-cross { display: inline; }
+#mute[aria-pressed='true'] .mute-waves { display: none; }
+
+/* ---- portrait phones: one column, tighter blade stacks ------------------------------------- */
+#stage.portrait .blade-content {
+  display: flex; flex-direction: column; gap: 14px;
+  padding: 44px 0 150px 44px; width: 464px; right: auto;
+}
+#stage.portrait .blade-content > :not(.buttonbar):not(.band) { position: relative; left: auto; top: auto; width: var(--col-w, 420px); flex: none; }
+#stage.portrait .tab-label { font-size: 20px; line-height: 22px; }
+#stage.portrait .blade-title { margin-bottom: 8px; }
+#stage.portrait .meta { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+#stage.portrait .meta > * { position: static; }
+#stage.portrait .meta-brand { display: none; }
+#stage.portrait .meta-title, #stage.portrait .meta-body { padding-left: 10px; }
+#stage.portrait .tray { margin-top: auto; width: calc(var(--col-w, 420px) - 10px); }
+#stage.portrait .buttonbar { width: 464px; }
+#stage.portrait .legend--b { left: 390px; }
+#stage.portrait .panel-list, #stage.portrait .panel-message { width: 430px; }
+#stage.portrait .panel .legend--b { left: 350px; }
+#stage.portrait .panel .legend--a { left: 370px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .panel { transition-duration: 1ms; }
+  .ring { animation: none; }
+}
+#stage.portrait .panel-title { font-size: 28px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 440px; }
