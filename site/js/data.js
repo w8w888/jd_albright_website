@@ -17,6 +17,7 @@ export const brand = { title: 'JD Albright', subtitle: 'Computer Science · Univ
 const EMAIL = 'junoa@umich.edu';
 const LINKEDIN = 'https://www.linkedin.com/in/jd-albright';
 const ARTSTATION = 'https://wxntergreen.artstation.com';
+const GITHUB = 'https://github.com/w8w888';
 
 const COLOURS = {
   orange: {
@@ -202,6 +203,8 @@ export const blades = [
         meta: { title: 'Email', body: EMAIL } },
       { id: 'linkedin', label: 'LinkedIn', icon: 'shrdres/ico_32x_Friend.png', href: LINKEDIN,
         meta: { title: 'LinkedIn', body: 'linkedin.com/in/jd-albright' } },
+      { id: 'github', label: 'GitHub', icon: 'dashcomm/ico_32x_PC.png', href: GITHUB,
+        meta: { title: 'GitHub', body: 'github.com/w8w888' } },
       { id: 'artstation', label: 'ArtStation', icon: 'dashcomm/ico_32x_DigitalCamera.png', href: ARTSTATION,
         meta: { title: 'ArtStation', body: 'wxntergreen.artstation.com' } },
     ],
