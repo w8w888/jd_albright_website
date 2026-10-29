@@ -10,8 +10,8 @@ select it to open the full details or follow the link.
 npm run dev            # serves site/ at http://localhost:8080
 ```
 
-No build step: `site/` is plain HTML, CSS and ES modules. Deploy `site/` as-is (Cloudflare Pages: no build
-command, output directory `site`).
+No build step: `site/` is plain HTML, CSS and ES modules. It deploys as a Cloudflare Worker with static
+assets (`wrangler.jsonc`); pushes to `main` redeploy automatically.
 
 ## Layout
 
