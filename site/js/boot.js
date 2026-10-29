@@ -8,7 +8,7 @@ toggle.id = 'view-toggle';
 toggle.type = 'button';
 if (view === 'modern') {
   const icon = document.createElement('img');
-  icon.src = 'assets/images/gamesbla/ico_32x_myGames.png';   // the dashboard's controller icon
+  icon.src = 'assets/images/gamesbla/ico_64x_controller.png';   // the dashboard's controller icon
   icon.alt = '';
   toggle.appendChild(icon);
 }

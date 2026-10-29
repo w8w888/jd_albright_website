@@ -50,7 +50,7 @@ const THEMES = {
   red: { band: '#b4400f', body: '#e0661a', bodyLight: '#eb8a2a', footer: '#d0501a' },
 };
 
-const EMAIL_TRAY = { label: 'Email Me', href: `mailto:${EMAIL}`, icon: 'shrdres/ico_32x_Mail.png' };
+const EMAIL_TRAY = { label: 'Email Me', href: `mailto:${EMAIL}`, icon: 'shrdres/ico_Mail.svg' };
 
 export const blades = [
   {
@@ -65,7 +65,7 @@ export const blades = [
     },
     tray: EMAIL_TRAY,
     items: [
-      { id: 'me', label: 'About Me', icon: 'shrdres/ico_32x_Friend.png',
+      { id: 'me', label: 'About Me', icon: 'shrdres/ico_64x_friend.png',
         meta: { title: 'About Me', body: 'CS student at Michigan with two Bosch internships, a habit of rebuilding legacy software, and 50+ digital art pieces on ArtStation.' },
         details: [
           "I'm a Computer Science student at the University of Michigan in Ann Arbor.",
@@ -73,7 +73,7 @@ export const blades = [
           'On my own I like bringing old software back: an iOS remake of a 26-year-old desktop companion, and this site, a working recreation of the Xbox 360 dashboard.',
           'I also make digital art and video, and experiment with generative AI image workflows.',
         ] },
-      { id: 'education', label: 'Education', icon: 'gamesbla/ico_32x_achievements_white.png',
+      { id: 'education', label: 'Education', icon: 'gamesbla/ico_64x_trophy.png',
         meta: { title: 'Education', body: 'B.S. Computer Science, University of Michigan (2025 – 2028). Associate’s, Lake Michigan College (2021 – 2024).' },
         details: [
           'University of Michigan, Ann Arbor: Bachelor of Science in Computer Science, Jan 2025 – Jan 2028 (expected).',
@@ -81,7 +81,7 @@ export const blades = [
           'Lake Michigan College, Benton Harbor: Associate’s in General Studies, Sep 2021 – Dec 2024.',
           '• Coursework: Multi-variable calculus, vector calculus',
         ] },
-      { id: 'leadership', label: 'Leadership', icon: 'dashmain/ico_32x_parentalControl.png',
+      { id: 'leadership', label: 'Leadership', icon: 'dashmain/ico_parentalControl.svg',
         meta: { title: 'Sigma Phi Fraternity', body: 'President and Property Manager since May 2025.' },
         details: [
           'Sigma Phi Fraternity, Ann Arbor: President, Property Manager (May 2025 – present)',
@@ -99,7 +99,7 @@ export const blades = [
     motd: { title: 'Experience', body: 'Two summers at Bosch USA in Saint Joseph, Michigan, building tools for logistics and engineering teams.' },
     tray: EMAIL_TRAY,
     items: [
-      { id: 'bosch-2024', label: ['Bosch USA · 2024', 'Logistics Intern'], size: 'large', icon: 'dashmain/ico_32x_systemSet.png',
+      { id: 'bosch-2024', label: ['Bosch USA · 2024', 'Logistics Intern'], size: 'large', icon: 'dashmain/ico_systemSet.svg',
         meta: { title: 'Logistics Intern', body: 'May – Aug 2024. Teams AI agent (TypeScript, GPT-4), plant-wide part tracking in Python, $20K+ in savings found in SAP.' },
         details: [
           'Bosch USA, Saint Joseph, MI: Logistics Intern, May – Aug 2024',
@@ -107,7 +107,7 @@ export const blades = [
           '• Implemented and deployed a Python part-tracking metrics system across the plant’s production environment',
           '• Performed product analysis in SAP, identifying end-of-life optimizations that saved over $20,000',
         ] },
-      { id: 'bosch-2023', label: ['Bosch USA · 2023', 'Engineering Intern'], size: 'large', icon: 'dashmain/ico_32x_console.png',
+      { id: 'bosch-2023', label: ['Bosch USA · 2023', 'Engineering Intern'], size: 'large', icon: 'dashmain/ico_console.svg',
         meta: { title: 'Engineering Intern', body: 'May – Aug 2023. Repair tracking in Python with Power BI, Visual Basic automation, SAP inventory data.' },
         details: [
           'Bosch USA, Saint Joseph, MI: Engineering Intern, May – Aug 2023',
@@ -123,9 +123,9 @@ export const blades = [
     title: 'Projects',
     colour: COLOURS.blue, theme: THEMES.blue,
     motd: { title: 'Projects', body: 'Things I’ve built: games, legacy-software revivals, AI image workflows, and digital art.' },
-    tray: { label: 'ArtStation Portfolio', href: ARTSTATION, icon: 'dashcomm/ico_32x_DigitalCamera.png' },
+    tray: { label: 'ArtStation Portfolio', href: ARTSTATION, icon: 'dashcomm/ico_96x_Camera.png' },
     items: [
-      { id: 'this-site', label: 'This Website', icon: 'gamesbla/ico_32x_demos.png',
+      { id: 'this-site', label: 'This Website', icon: 'gamesbla/ico_demos.svg',
         meta: { title: 'Xbox 360 Dashboard Recreation', body: 'A working web recreation of the 2008 “Blades” dashboard, rebuilt from the console’s own files.' },
         details: [
           'A recreation of the Xbox 360 “Blades” dashboard (2.0.6770) in plain HTML, CSS, and JavaScript.',
@@ -134,7 +134,7 @@ export const blades = [
           '• Converted the console’s own UI font (an .xtt file) back into a standard TrueType font',
           '• Mouse, touch, keyboard, and controller input; adapts to any screen size',
         ] },
-      { id: 'ukagaka', label: 'iOS Ukagaka Remake', icon: 'shrdres/ico_32x_messenger.png',
+      { id: 'ukagaka', label: 'iOS Ukagaka Remake', icon: 'shrdres/ico_64x_messenger.png',
         meta: { title: 'iOS Ukagaka Ghost Legacy Remake', body: 'Swift and WidgetKit. A 26-year-old desktop companion brought to iOS widgets.' },
         details: [
           'iOS Ukagaka Ghost Legacy Remake: Swift, WidgetKit',
@@ -142,7 +142,7 @@ export const blades = [
           '• Built a custom parser that interprets and executes 26-year-old scripting files, preserving the original character logic',
           '• Implemented on-device import and ZIP extraction so users can add their own characters and assets',
         ] },
-      { id: 'trading', label: 'Trading Simulation Game', icon: 'gamesbla/ico_32x_arcade.png',
+      { id: 'trading', label: 'Trading Simulation Game', icon: 'gamesbla/ico_arcade.svg',
         meta: { title: 'Trading Simulation Game', body: 'Java and Swing. A turn-based market simulation with AI opponents.' },
         details: [
           'Trading Simulation Game: Java, Swing',
@@ -150,7 +150,7 @@ export const blades = [
           '• Built an event-driven GUI with Java Swing to visualize market data',
           '• Wrote unit tests for trade calculations, edge cases, and AI behavior',
         ] },
-      { id: 'genai', label: 'Generative AI Workflows', icon: 'dashcomm/ico_32x_DigitalCamera.png',
+      { id: 'genai', label: 'Generative AI Workflows', icon: 'dashcomm/ico_96x_Camera.png',
         meta: { title: 'Generative AI Image Workflows', body: 'ComfyUI, Stable Diffusion, and Photoshop.' },
         details: [
           'Generative AI Image Workflows: ComfyUI, Stable Diffusion, Photoshop',
@@ -159,7 +159,7 @@ export const blades = [
         ] },
       { id: 'art', label: 'Digital Art & Video', icon: 'mediabla/ico_64x_TrailersFolder_white.png', href: ARTSTATION,
         meta: { title: 'Digital Art & Video Editing', body: '50+ digital art and graphic design pieces on ArtStation; video editing in Premiere Pro and After Effects. Select to open ArtStation.' } },
-      { id: 'lab', label: 'Hardware Lab', icon: 'dashcomm/ico_32x_PC.png',
+      { id: 'lab', label: 'Hardware Lab', icon: 'dashcomm/ico_96x_PC.png',
         meta: { title: 'Workstation Deployment & Hardware Lab', body: 'Windows, macOS, and Linux installs on physical and virtual machines.' },
         details: [
           'Workstation Deployment & Hardware Lab: Windows, macOS, Linux, VMs, FTP',
@@ -177,17 +177,17 @@ export const blades = [
     motd: { title: 'Skills', body: 'Languages, tools, and platforms I work with.' },
     tray: EMAIL_TRAY,
     items: [
-      { id: 'languages', label: 'Languages', icon: 'gamesbla/ico_32x_myGames.png',
+      { id: 'languages', label: 'Languages', icon: 'gamesbla/ico_64x_controller.png',
         meta: { title: 'Languages', body: 'C++, Java, Python, Swift, TypeScript, Visual Basic' } },
-      { id: 'tools', label: 'Developer Tools', icon: 'dashmain/ico_32x_systemSet.png',
+      { id: 'tools', label: 'Developer Tools', icon: 'dashmain/ico_systemSet.svg',
         meta: { title: 'Developer Tools', body: 'Git, GDB, Make, Visual Studio Code, Xcode, Linux, WSL' } },
-      { id: 'ai', label: 'Generative AI', icon: 'shrdres/ico_32x_messenger.png',
+      { id: 'ai', label: 'Generative AI', icon: 'shrdres/ico_64x_messenger.png',
         meta: { title: 'Generative AI', body: 'Prompt engineering, Claude, Gemini, GPT-4, Stable Diffusion, ComfyUI, AI coding agents' } },
-      { id: 'creative', label: 'Creative & Design', icon: 'dashcomm/ico_32x_DigitalCamera.png',
+      { id: 'creative', label: 'Creative & Design', icon: 'dashcomm/ico_96x_Camera.png',
         meta: { title: 'Creative & Design', body: 'Photoshop, Illustrator, After Effects, Premiere Pro; video editing, graphic design' } },
-      { id: 'systems', label: 'Systems & IT', icon: 'dashcomm/ico_32x_MU.png',
+      { id: 'systems', label: 'Systems & IT', icon: 'dashcomm/ico_64x_MU.png',
         meta: { title: 'Systems & IT', body: 'Windows, macOS, Linux, VMs; OS imaging, bootable media, drive cloning, MBR/GPT, UEFI/BIOS; hardware setup and repair' } },
-      { id: 'data', label: 'Data & Platforms', icon: 'dashmain/ico_32x_network.png',
+      { id: 'data', label: 'Data & Platforms', icon: 'dashmain/ico_network.svg',
         meta: { title: 'Data & Platforms', body: 'Microsoft Power BI, SAP, Microsoft Teams SDK' } },
     ],
   },
@@ -199,13 +199,13 @@ export const blades = [
     motd: { title: 'Get in Touch', body: 'Email is the fastest way to reach me.' },
     tray: EMAIL_TRAY,
     items: [
-      { id: 'email', label: 'Email', icon: 'shrdres/ico_32x_Mail.png', href: `mailto:${EMAIL}`,
+      { id: 'email', label: 'Email', icon: 'shrdres/ico_Mail.svg', href: `mailto:${EMAIL}`,
         meta: { title: 'Email', body: EMAIL } },
-      { id: 'linkedin', label: 'LinkedIn', icon: 'shrdres/ico_32x_Friend.png', href: LINKEDIN,
+      { id: 'linkedin', label: 'LinkedIn', icon: 'shrdres/ico_64x_friend.png', href: LINKEDIN,
         meta: { title: 'LinkedIn', body: 'linkedin.com/in/jd-albright' } },
-      { id: 'github', label: 'GitHub', icon: 'dashcomm/ico_32x_PC.png', href: GITHUB,
+      { id: 'github', label: 'GitHub', icon: 'dashcomm/ico_96x_PC.png', href: GITHUB,
         meta: { title: 'GitHub', body: 'github.com/w8w888' } },
-      { id: 'artstation', label: 'ArtStation', icon: 'dashcomm/ico_32x_DigitalCamera.png', href: ARTSTATION,
+      { id: 'artstation', label: 'ArtStation', icon: 'dashcomm/ico_96x_Camera.png', href: ARTSTATION,
         meta: { title: 'ArtStation', body: 'wxntergreen.artstation.com' } },
     ],
   },

@@ -73,7 +73,7 @@ export function renderBlade(blade, contentEl) {
   if (blade.tray) {
     const tray = h('div', 'tray focusable', contentEl);
     const knob = h('div', 'tray-knob', tray);
-    img(blade.tray.icon ?? 'dashcomm/ico_32x_Eject.png', 'tray-icon', knob);
+    img(blade.tray.icon ?? 'dashcomm/ico_Eject.svg', 'tray-icon', knob);
     h('div', 'tray-label', tray, blade.tray.label);
     focusables.push({ el: tray, entry: { id: 'tray', kind: 'tray', href: blade.tray.href, meta: { title: blade.tray.label, body: blade.tray.href.replace(/^mailto:|^https?:\/\//, '') } } });
   }

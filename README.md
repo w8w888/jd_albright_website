@@ -29,6 +29,7 @@ assets (`wrangler.jsonc`); pushes to `main` redeploy automatically.
 | `site/js/main.js`, `site/js/input.js` | State, blade switching, panels; mouse, touch, keyboard and controller input |
 | `site/assets/` | Dashboard images and sounds, plus `images/portfolio/` for the site's own images |
 | `tools/shot.mjs` | Screenshot the site (optionally diff it against an image) |
+| `tools/icons.py` | Redraws the icons the console only ships at 32px as SVGs |
 
 ## Controls
 

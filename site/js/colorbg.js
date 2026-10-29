@@ -7,12 +7,14 @@ import { STAGE, BLADE } from './layout.js';
 // Background swirls: concentric-ring radial gradients, scaled and 3-D rotated. The scenes store the rotation
 // as a quaternion with no perspective, so it projects to a 2-D affine matrix. The XUI blend modes aren't
 // stored by meaning; drawing the colour layers normally and the swirls as a soft-light overlay above them
-// matched the captures best (tested against reference/screenshots with tools/shot.mjs).
+// matched the captures best (tested against reference/screenshots with tools/shot.mjs). The decoded tilt and
+// 3x scale stretched the rings into diagonal ripples, so they're drawn flat and smaller, which reads as the
+// captures' soft circles.
 const RINGS = '#000 0.39%, #000 1.96%, #000 10.59%, #fff 24.71%, #000 41.18%, #fff 56.47%, #000 72.16%, #fff 87.84%, #000 100%';
 const SWIRLS = [
-  { x: 154.96, y: -162.0, w: 770, h: 770, sx: 3, sy: 3, px: 385, py: 385, q: [0.3361, 0.6884, -0.5776, -0.2821], opacity: 0.5, stops: RINGS },
-  { x: -218.82, y: 110.05, w: 476, h: 777, sx: 3, sy: 3, px: 385, py: 385, q: [0.2129, 0.7359, -0.6175, -0.1786], opacity: 0.8, stops: RINGS },
-  { x: 304.64, y: 78.28, w: 432, h: 440, sx: 4, sy: 3, px: 196, py: 196, q: null, opacity: 1,
+  { x: 154.96, y: -162.0, w: 770, h: 770, sx: 1.6, sy: 1.6, px: 385, py: 385, q: null, opacity: 0.5, stops: RINGS },
+  { x: -218.82, y: 110.05, w: 476, h: 777, sx: 1.6, sy: 1.6, px: 385, py: 385, q: null, opacity: 0.8, stops: RINGS },
+  { x: 304.64, y: 78.28, w: 432, h: 440, sx: 2.2, sy: 2.2, px: 196, py: 196, q: null, opacity: 1,
     stops: 'rgba(15,15,15,.2) 0.39%, rgba(15,15,15,.2) 3.92%, rgba(15,15,15,.78) 10.2%, rgba(235,235,235,.59) 24.71%, rgba(15,15,15,.59) 41.18%, #fff 56.47%, #000 72.16%, #fff 87.45%, #000 100%' },
 ];
 
@@ -40,7 +42,7 @@ export function createColorBackground(stage, blades) {
       left: `${s.x}px`, top: `${s.y}px`, width: `${s.w}px`, height: `${s.h}px`,
       transformOrigin: `${s.px}px ${s.py}px`,
       transform: `matrix(${m.join(',')},0,0) scale(${s.sx},${s.sy})`,
-      opacity: `calc(var(--swirl, .55) * ${s.opacity})`,
+      opacity: `calc(var(--swirl, 1) * ${s.opacity})`,
       background: `radial-gradient(closest-side, ${s.stops})`,
     });
   }

@@ -20,3 +20,4 @@ dist/
 # Original photos (only the cropped, metadata-free copy in site/ is published)
 /*.jpg
 /*.png
+/.claude/
