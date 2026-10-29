@@ -84,7 +84,7 @@ a { color: inherit; }
 .m-tab:focus-visible { outline: 3px solid var(--accent-bright); outline-offset: 3px; }
 
 /* ---- sections ------------------------------------------------------------------------------- */
-.m-main { min-width: 0; }
+.m-main { min-width: 0; overflow-x: clip; overflow-clip-margin: 40px; }   /* sections slide in from the side without widening the page */
 .m-track { position: relative; }
 .m-section { animation-duration: .38s; animation-timing-function: cubic-bezier(.2, .8, .2, 1); animation-fill-mode: both; }
 .m-section.is-in-right { animation-name: m-in-right; }
@@ -179,6 +179,7 @@ a { color: inherit; }
 
 /* ---- narrow screens: tabs become a top bar ---------------------------------------------------- */
 @media (max-width: 820px) {
+  html { scroll-padding-top: 124px; }   /* clear the sticky tab bar */
   body { font-size: 16px; }
   .m-app { display: block; padding: 0 0 80px; }
   .m-rail {
@@ -189,7 +190,7 @@ a { color: inherit; }
   .m-brand { margin: 0 0 10px; }
   .m-brand-name { font-size: 24px; display: inline; }
   .m-brand-sub { display: inline; margin-left: 8px; font-size: 11px; }
-  .m-tabs { flex-direction: row; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 2px 16px 6px; }
+  .m-tabs { position: relative; flex-direction: row; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -16px; padding: 2px 16px 6px; }
   .m-tabs::-webkit-scrollbar { display: none; }
   .m-tab { flex: none; height: 40px; padding: 0 16px 0 22px; font-size: 19px; border-radius: 6px 20px 20px 6px; }
   .m-tab::before { left: 8px; top: 9px; bottom: 9px; width: 4px; }

@@ -137,7 +137,11 @@ function show(i, { scroll = true } = {}) {
   });
   document.documentElement.style.setProperty('--page-accent', blades[i].theme.band);
   if (scroll && from >= 0) main.scrollIntoView({ block: 'start', behavior: 'smooth' });
-  tabEls[i].scrollIntoView({ block: 'nearest', inline: 'center' });
+  // centre the tab in the (phone) tab bar; scrolling just the bar, scrollIntoView would also shift the page
+  const t = tabEls[i];
+  if (tabs.scrollWidth > tabs.clientWidth) {
+    tabs.scrollTo({ left: t.offsetLeft - (tabs.clientWidth - t.offsetWidth) / 2, behavior: from >= 0 ? 'smooth' : 'auto' });
+  }
 }
 
 function fromHash() {
