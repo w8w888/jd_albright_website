@@ -6,6 +6,10 @@
 // two with its bend tweens; here a strip flips halfway across. Strips further from the content sit lower,
 // as in the captures.
 // Paths are in XUI units inside a 161x853 box; the box is scaled onto the stage.
+// On portrait phones the whole arrangement is turned sideways: strips run across the screen, earlier blades
+// stack at the top and later ones at the bottom. Geometry is worked out as if in landscape along the
+// stacking axis ("along", down the screen) and the strip axis ("across", the screen width), and the strip
+// art is mirrored across its diagonal (CSS, #stage.portrait .blade-art) so the decoded shapes still apply.
 import { STAGE, BLADE } from './layout.js';
 
 const SVG = 'http://www.w3.org/2000/svg';
@@ -27,27 +31,35 @@ const NOTCH_DESIGN = 128.5;
 
 const clamp01 = (v) => Math.min(1, Math.max(0, v));
 
-// x (stage px) of a blade's box in the left or right stack
+// stage length along the stacking axis, and along the strips
+const along = () => (STAGE.portrait ? STAGE.h : STAGE.w);
+const across = () => (STAGE.portrait ? STAGE.w : STAGE.h);
+
+// position (stage px along the stacking axis: x, or y on a portrait phone) of a blade's box in the
+// left/top or right/bottom stack
 export function stackX(i, count, onLeft) {
   const s = BLADE.scale;
   if (onLeft) return (22 + 41 * i) * s - 1.8;
-  return STAGE.w - (1280 - (1.1416 * (924 - 40 * (count - 1 - i)) - 1.8) - BLADE.rightNudge) * (s / 1.1416);
+  return along() - (1280 - (1.1416 * (924 - 40 * (count - 1 - i)) - 1.8) - BLADE.rightNudge) * (s / 1.1416);
 }
 
-const sy = () => 1.0945 * STAGE.h / 720;
+const sy = () => 1.0945 * across() / 720;
+// the strip art starts this far before the blade's box (40 px at the 1280x720 scale)
+const artOffset = () => 40 * BLADE.scale / 1.1416;
 
-// stage px a strip sits below its design position, for a (fractional) depth in its stack
+// stage px a strip sits further along its length than its design position, for a (fractional) depth in its stack
 function notchShift(onLeft, depth) {
   const notch = onLeft ? NOTCH.left + NOTCH.leftStep * depth : NOTCH.right + NOTCH.rightStep * depth;
-  return (notch - NOTCH_DESIGN) * STAGE.h / 720;
+  return (notch - NOTCH_DESIGN) * across() / 720;
 }
 
 // Points (stage px) along the outer edge of a stack's outermost strip, moved `inset` path units inward,
-// top to bottom. The colour background is clipped to the area between the two stacks.
+// top to bottom (left to right on a portrait phone). The colour background is clipped to the area between
+// the two stacks.
 export function outerEdge(count, onLeft, depth, inset) {
   const side = onLeft ? UNMIRRORED : MIRRORED;
-  const x0 = stackX(onLeft ? 0 : count - 1, count, onLeft) - 40;
-  const y0 = -61.8 * STAGE.h / 720 + notchShift(onLeft, depth) - 73.41 * sy();
+  const x0 = stackX(onLeft ? 0 : count - 1, count, onLeft) - artOffset();
+  const y0 = -61.8 * across() / 720 + notchShift(onLeft, depth) - 73.41 * sy();
   const pts = [];
   for (let seg = 0; seg < 2; seg++) {
     const [p0, p1, p2, p3] = EDGE.slice(seg * 3, seg * 3 + 4);
@@ -55,7 +67,8 @@ export function outerEdge(count, onLeft, depth, inset) {
       const t = k / 12, u = 1 - t;
       const bx = u * u * u * p0[0] + 3 * u * u * t * p1[0] + 3 * u * t * t * p2[0] + t * t * t * p3[0];
       const by = u * u * u * p0[1] + 3 * u * u * t * p1[1] + 3 * u * t * t * p2[1] + t * t * t * p3[1];
-      pts.push([x0 + (side.mx + side.dir * (bx + inset)) * BLADE.scale, y0 + by * sy()]);
+      const a = x0 + (side.mx + side.dir * (bx + inset)) * BLADE.scale, b = y0 + by * sy();
+      pts.push(STAGE.portrait ? [b, a] : [a, b]);
     }
   }
   return pts;
@@ -117,24 +130,27 @@ export function createBlade(blade, index) {
 
 // Fit a blade's art to the current stage size (called on creation and when the layout changes).
 export function sizeBlade(p) {
-  const sx = BLADE.scale, sy = 1.0945 * STAGE.h / 720;
-  p.svg.setAttribute('width', Math.ceil(161 * sx));
-  p.svg.setAttribute('height', STAGE.h);
+  p.svg.setAttribute('width', Math.ceil(161 * BLADE.scale));
+  p.svg.setAttribute('height', across());
+  p.svg.style.left = STAGE.portrait ? '0' : `${-artOffset()}px`;
+  p.svg.style.top = STAGE.portrait ? `${-artOffset()}px` : '0';
   p.shift = null;
   p.root.style.height = `${STAGE.h}px`;
-  p.content.style.left = `${BLADE.contentX}px`;
+  // content sits beside the active strip, or below it on a portrait phone
+  p.content.style.left = STAGE.portrait ? '0' : `${BLADE.contentX}px`;
+  p.content.style.top = STAGE.portrait ? `${BLADE.contentX}px` : '0';
 }
 
 // Lay out all blades for a (possibly fractional) active index t.
 export function layoutBlades(parts, t) {
   const n = parts.length;
   parts.forEach((p, i) => {
-    const arrive = clamp01(t - (i - 1));   // 0 = waiting on the right, 1 = in the left stack
+    const arrive = clamp01(t - (i - 1));   // 0 = waiting on the right (bottom), 1 = in the left (top) stack
     const covered = clamp01(t - i);        // 1 = covered by the next blade
     const active = arrive * (1 - covered);
     const onLeft = arrive >= 0.5;
     const x = stackX(i, n, false) + (stackX(i, n, true) - stackX(i, n, false)) * arrive;
-    p.root.style.transform = `translate3d(${x.toFixed(2)}px,0,0)`;
+    p.root.style.transform = STAGE.portrait ? `translate3d(0,${x.toFixed(2)}px,0)` : `translate3d(${x.toFixed(2)}px,0,0)`;
     p.root.style.zIndex = String(onLeft ? 10 + i : 100 - i);
     p.root.classList.toggle('on-left', onLeft);
 
@@ -143,7 +159,7 @@ export function layoutBlades(parts, t) {
     if (shift !== p.shift || onLeft !== p.onLeft) {
       p.shift = shift;
       p.onLeft = onLeft;
-      p.scaler.setAttribute('transform', `translate(0 ${(-61.8 * STAGE.h / 720 + shift).toFixed(2)}) scale(${BLADE.scale} ${sy().toFixed(4)})`);
+      p.scaler.setAttribute('transform', `translate(0 ${(-61.8 * across() / 720 + shift).toFixed(2)}) scale(${BLADE.scale} ${sy().toFixed(4)})`);
       p.left.g.style.display = onLeft ? '' : 'none';
       p.right.g.style.display = onLeft ? 'none' : '';
     }
@@ -152,8 +168,8 @@ export function layoutBlades(parts, t) {
     (onLeft ? p.left : p.right).tint.setAttribute('opacity', (0.6 * k).toFixed(3));
 
     const lx = (BLADE.labelLeft * arrive + BLADE.labelRight * (1 - arrive)) * BLADE.scale / 1.1416;
-    const ly = (NOTCH_DESIGN + 14) * STAGE.h / 720 + shift;
-    p.label.style.transform = `translate(${lx.toFixed(1)}px, ${ly.toFixed(1)}px)`;
+    const ly = (NOTCH_DESIGN + 14) * across() / 720 + shift;
+    p.label.style.transform = STAGE.portrait ? `translate(${ly.toFixed(1)}px, ${lx.toFixed(1)}px)` : `translate(${lx.toFixed(1)}px, ${ly.toFixed(1)}px)`;
     p.label.style.color = k > 0.5 ? 'rgba(15,15,15,.75)' : 'rgba(15,15,15,.59)';
 
     p.content.style.opacity = (k * k).toFixed(3);

@@ -23,9 +23,19 @@ const parts = blades.map((b, i) => createBlade(b, i));
 for (const p of parts) stage.appendChild(p.root);
 
 // Content keeps clear of the blades waiting on the right: the description panel, tray bar and (portrait)
-// column shrink to the room between the active blade and the first blade of the right stack.
+// column shrink to the room between the active blade and the first blade of the right stack. On a portrait
+// phone the content column instead fills the height between the top and bottom stacks.
 function fitContent() {
   const n = blades.length;
+  if (STAGE.portrait) {
+    parts.forEach((p, i) => {
+      const top = stackX(i, n, true) + BLADE.contentX;
+      const bottom = i < n - 1 ? stackX(i + 1, n, false) - 4 : STAGE.h;
+      p.content.style.setProperty('--room-h', `${bottom - top}px`);
+      p.content.style.setProperty('--band-w', `${STAGE.w - 36}px`);
+    });
+    return;
+  }
   parts.forEach((p, i) => {
     const origin = stackX(i, n, true) + BLADE.contentX;
     const right = i < n - 1 ? stackX(i + 1, n, false) + 38 * BLADE.scale : STAGE.w;
@@ -96,8 +106,8 @@ function goToBlade(i) {
 // ---- panels --------------------------------------------------------------------------------
 function openPanel(spec) {
   const blade = blades[active];
-  const left = stackX(active, blades.length, true) + 117 * BLADE.scale / 1.1416;
-  const panel = createPanel(stage, { theme: blade.theme, left, ...spec });
+  const along = stackX(active, blades.length, true) + (STAGE.portrait ? BLADE.contentX - 8 : 117 * BLADE.scale / 1.1416);
+  const panel = createPanel(stage, { theme: blade.theme, left: STAGE.portrait ? 0 : along, top: STAGE.portrait ? along : 0, ...spec });
   panel.focus = 0;
   panel.onSelect = spec.onSelect;
   panel.focusables[0]?.el.classList.add('is-focused');

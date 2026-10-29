@@ -1,5 +1,6 @@
 // Mouse, touch and keyboard input, translated into dashboard actions.
 // act(name, arg) names: prev, next, blade (index), up, down, hover (element), press (element), a, b, x, y.
+import { STAGE } from './layout.js';
 
 const WHEEL_STEP = 100;    // accumulated wheel delta per action (one mouse notch)
 const SWIPE_MIN = 40;      // px before a touch drag counts as a swipe
@@ -25,6 +26,14 @@ export function initInput(viewport, act) {
     if (!drag.swiped && Math.abs(dx) > SWIPE_MIN && Math.abs(dx) > Math.abs(dy) * 1.2) {
       drag.swiped = true;
       act(dx < 0 ? 'next' : 'prev');
+    }
+    // portrait phone: the blades stack top and bottom, so swiping up brings the next one up
+    if (STAGE.portrait) {
+      if (!drag.swiped && Math.abs(dy) > SWIPE_MIN && Math.abs(dy) > Math.abs(dx) * 1.2) {
+        drag.swiped = true;
+        act(dy < 0 ? 'next' : 'prev');
+      }
+      return;
     }
     if (!drag.swiped) {
       const steps = Math.trunc(-dy / ROW_SWIPE);

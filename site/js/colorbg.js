@@ -55,7 +55,9 @@ export function createColorBackground(stage, blades) {
     slot.front.style.background = grad(c.front);
   };
   paint(slots[0], blades[0]);
-  slots[1].back.style.clipPath = slots[1].front.style.clipPath = 'inset(0 0 0 100%)';
+  // hidden: clipped away to the side the next blade arrives from (right, or bottom on a portrait phone)
+  const hidden = () => (STAGE.portrait ? 'inset(100% 0 0 0)' : 'inset(0 0 0 100%)');
+  slots[1].back.style.clipPath = slots[1].front.style.clipPath = hidden();
 
   return {
     root,
@@ -65,12 +67,12 @@ export function createColorBackground(stage, blades) {
       paint(incoming, blade);
       for (const l of [incoming.back, incoming.front]) {
         l.style.transition = 'none';
-        l.style.clipPath = animate ? 'inset(0 0 0 100%)' : 'inset(0)';
+        l.style.clipPath = animate ? hidden() : 'inset(0)';
         l.style.zIndex = '2';
       }
       for (const l of [outgoing.back, outgoing.front]) l.style.zIndex = '1';
       if (animate) {
-        // the new colour wipes in from the right over the first half of the blade switch
+        // the new colour wipes in from the right (bottom) over the first half of the blade switch
         void incoming.back.offsetWidth;
         for (const l of [incoming.back, incoming.front]) {
           l.style.transition = `clip-path ${BLADE.switchMs * 0.55}ms linear`;
@@ -80,14 +82,16 @@ export function createColorBackground(stage, blades) {
       current = 1 - current;
     },
     // map the 1120x770 scene onto the stage; the colour only shows between the outer blade strips
-    // (outside them are the silver wings). leftEdge / rightEdge: stage points, top to bottom; a missing
-    // right edge leaves the colour running to the stage edge.
+    // (outside them are the silver wings). leftEdge / rightEdge: stage points, top to bottom (the top and
+    // bottom edges, left to right, on a portrait phone); a missing right edge leaves the colour running to
+    // the stage edge.
     fit(leftEdge, rightEdge) {
       const sx = STAGE.portrait ? STAGE.w / 1120 * 1.6 : 1.1416 * STAGE.w / 1280;
       const sy = 1.0945 * STAGE.h / 720;
       const tx = STAGE.portrait ? -STAGE.w * 0.3 : -1.8;
       scene.style.transform = `translate(${tx}px, ${(-61.8 * STAGE.h / 720).toFixed(1)}px) scale(${sx}, ${sy})`;
-      const right = rightEdge ? [...rightEdge].reverse() : [[STAGE.w, STAGE.h], [STAGE.w, 0]];
+      const corners = STAGE.portrait ? [[STAGE.w, STAGE.h], [0, STAGE.h]] : [[STAGE.w, STAGE.h], [STAGE.w, 0]];
+      const right = rightEdge ? [...rightEdge].reverse() : corners;
       root.style.clipPath = `polygon(${[...leftEdge, ...right].map(([x, y]) => `${x.toFixed(1)}px ${y.toFixed(1)}px`).join(',')})`;
     },
   };

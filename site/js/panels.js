@@ -12,10 +12,11 @@ function h(tag, cls, parent, text) {
   return n;
 }
 
-// spec: { title, theme, items: [{ label, icon?, picture?, meta? }], message?, body?: string[], left }
+// spec: { title, theme, items: [{ label, icon?, picture?, meta? }], message?, body?: string[], left, top }
 export function createPanel(stage, spec) {
   const root = h('div', 'panel', stage);
   root.style.setProperty('--panel-left', `${spec.left}px`);
+  root.style.setProperty('--panel-top', `${spec.top ?? 0}px`);
   root.style.setProperty('--band', spec.theme.band);
   root.style.setProperty('--body', spec.theme.body);
   root.style.setProperty('--body-light', spec.theme.bodyLight);

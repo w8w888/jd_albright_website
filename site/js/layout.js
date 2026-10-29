@@ -1,7 +1,8 @@
 // Stage and blade geometry. The stage always fills the viewport: its height is 720 logical px (landscape)
 // and its width follows the viewport's aspect ratio, so wider screens get more room between the content and
 // the right-hand blades. Narrow landscape screens keep a minimum width and grow taller instead. Portrait
-// phones get a 640-wide stage with the content stacked in one column (see #stage.portrait in the CSS).
+// phones get a 560-wide stage with the blades turned sideways (stacked top and bottom, see blades.js) and the
+// content in one column between them (see #stage.portrait in the CSS).
 // At 1280x720 everything matches reference/screenshots/live-blade-signed-out.png.
 
 export const STAGE = { w: 0, h: 720, portrait: false };   // set by setLayout
@@ -14,10 +15,11 @@ const LANDSCAPE = {
   labelRight: 46,       // … and a right-stack strip
   switchMs: 340,        // one blade step (decoded: 20–24 frames at 60 fps)
 };
-const PORTRAIT = { scale: 0.55, contentX: 40, rightNudge: 75 };
+// on a portrait phone: strip thickness, content offset below the active strip, bottom stack offset
+const PORTRAIT = { scale: 0.8, contentX: 70, rightNudge: 88, labelLeft: 57 };
 
 const MIN_LANDSCAPE_W = 1280;   // content plus both blade stacks fit from here up
-const PORTRAIT_W = 640;
+const PORTRAIT_W = 560;
 
 export const BLADE = { ...LANDSCAPE };
 
