@@ -1,7 +1,7 @@
 import { blades, startBlade } from './data.js';
 import { STAGE, BLADE, setLayout } from './layout.js';
 import { createBlade, layoutBlades, sizeBlade, stackX, outerEdge } from './blades.js';
-import { renderBlade } from './content.js';
+import { renderBlade, markClipped } from './content.js';
 import { createColorBackground } from './colorbg.js';
 import { createPanel } from './panels.js';
 import { initInput } from './input.js';
@@ -34,6 +34,8 @@ function fitContent() {
       p.content.style.setProperty('--room-h', `${bottom - top}px`);
       p.content.style.setProperty('--band-w', `${STAGE.w - 36}px`);
     });
+    // fade out a description cut short by the room (dashboard.css lets it shrink)
+    for (const m of stage.querySelectorAll('.meta')) markClipped(m);
     return;
   }
   parts.forEach((p, i) => {

@@ -298,12 +298,18 @@ body { -webkit-tap-highlight-color: transparent; -webkit-user-select: none; user
   display: flex; flex-direction: column; gap: 12px;
   padding: 24px 34px 128px; width: 100%; height: var(--room-h); bottom: auto;
 }
-#stage.portrait .blade-content > :not(.buttonbar):not(.band) { position: relative; left: auto; top: auto; width: 100%; flex: none; }
+#stage.portrait .blade-content > :not(.buttonbar):not(.band) { position: relative; left: auto; top: auto; width: 100%; }
+#stage.portrait .blade-content > * { flex: none; }
 #stage.portrait .blade-content > .band { left: 14px; width: calc(100% - 28px); }
 #stage.portrait .band--top { height: 76px; }
 #stage.portrait .band--bottom { height: 112px; }
 #stage.portrait .blade-title { margin-bottom: 4px; }
-#stage.portrait .meta { display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+/* on short screens the description gives way (clipped, fading out) so the tray stays above the button bar */
+#stage.portrait .meta {
+  display: flex; flex-direction: column; gap: 6px; margin-top: 4px;
+  flex: 0 1 auto; min-height: 0; overflow: hidden;
+}
+#stage.portrait .meta.is-clipped { mask-image: linear-gradient(180deg, #000 calc(100% - 34px), transparent); }
 #stage.portrait .meta > * { position: static; }
 #stage.portrait .meta-brand, #stage.portrait .meta-rule { display: none; }
 #stage.portrait .meta-title, #stage.portrait .meta-body { padding-left: 10px; }

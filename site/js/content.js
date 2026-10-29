@@ -90,8 +90,14 @@ export function renderBlade(blade, contentEl) {
       const m = entry?.meta ?? blade.motd;
       metaTitle.textContent = m.title;
       metaBody.textContent = m.body;
+      markClipped(meta);
     },
   };
+}
+
+// flag a description cut short by its room (portrait phones; dashboard.css fades it out)
+export function markClipped(meta) {
+  requestAnimationFrame(() => meta.classList.toggle('is-clipped', meta.scrollHeight > meta.clientHeight + 1));
 }
 
 function legend(bar, key, text, cls) {
