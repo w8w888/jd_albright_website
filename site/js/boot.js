@@ -6,7 +6,13 @@ const other = view === 'modern' ? 'classic' : 'modern';
 const toggle = document.createElement('button');
 toggle.id = 'view-toggle';
 toggle.type = 'button';
-toggle.textContent = view === 'modern' ? 'Dashboard view' : 'Modern view';
+if (view === 'modern') {
+  const icon = document.createElement('img');
+  icon.src = 'assets/images/gamesbla/ico_32x_myGames.png';   // the dashboard's controller icon
+  icon.alt = '';
+  toggle.appendChild(icon);
+}
+toggle.append(view === 'modern' ? 'Dashboard view' : 'Modern view');
 toggle.title = view === 'modern' ? 'Switch to the Xbox 360 dashboard' : 'Switch to the standard portfolio layout';
 // keep presses away from the dashboard's own pointer and keyboard handling
 for (const type of ['pointerdown', 'pointerup', 'click', 'wheel', 'touchstart', 'keydown']) {

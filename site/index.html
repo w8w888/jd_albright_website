@@ -8,11 +8,11 @@
   <meta name="theme-color" content="#d3d3d3">
   <link rel="preload" href="fonts/convection.ttf" as="font" type="font/ttf" crossorigin>
   <script>
-    // Pick the view (?view=modern|classic, else the last choice) and its stylesheet before first paint.
+    // Pick the view (?view=modern|classic, else the last choice, else modern) and its stylesheet before first paint.
     (function () {
       var v = new URLSearchParams(location.search).get('view');
       try { if (v) localStorage.setItem('view', v); else v = localStorage.getItem('view'); } catch (e) {}
-      v = v === 'modern' ? 'modern' : 'classic';
+      v = v === 'classic' ? 'classic' : 'modern';
       document.documentElement.dataset.view = v;
       var l = document.createElement('link');
       l.rel = 'stylesheet';

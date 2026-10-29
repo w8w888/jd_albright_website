@@ -4,7 +4,7 @@ JD Albright's portfolio site, presented as a working recreation of the Xbox 360 
 Each blade is a section (about, experience, projects, skills, contact); highlight an item to see a summary,
 select it to open the full details or follow the link.
 
-A second, modern view shows the same content as a standard portfolio page (blade-style tabs, section colours).
+The default modern view shows the same content as a standard portfolio page (blade-style tabs, section colours).
 The button at the corner switches views; the choice is remembered, and `?view=modern` / `?view=classic`
 links straight to one.
 
