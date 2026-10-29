@@ -1,4 +1,4 @@
-# jd_albright_website
+# JD Albright Portfolio Website
 
 JD Albright's portfolio site, presented as a working recreation of the Xbox 360 "Blades" dashboard.
 Each blade is a section (about, experience, projects, skills, contact); highlight an item to see a summary,
